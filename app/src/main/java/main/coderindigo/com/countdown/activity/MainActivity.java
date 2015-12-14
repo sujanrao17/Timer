@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import main.coderindigo.com.countdown.R;
+import main.coderindigo.com.countdown.activity.helper.CountdownTimer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, Dialog.OnClickListener{
 
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button startButton;
     private Button stopButton;
     private Handler handler;
-    private long timeRemaining = 5000;
+    private EditText userInput;
+    private CountdownTimer timer;
 
     public MainActivity() {
     }
@@ -53,25 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopButton = (Button) findViewById(R.id.stop_button);
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
-
         handler = new Handler();
-
-        Runnable runnable = new Runnable() {
+        timer = new CountdownTimer(handler) {
             @Override
-            public void run() {
-
-                timeRemaining = timeRemaining- 1000;
-                if (timeRemaining>0){
-                    handler.postDelayed(this, 1000);
-                }
+            public void updateUI(long time) {
+                mTime.setText(time + "");
             }
+
         };
-        handler.postDelayed(runnable, 1000);
-
-
-
-
-
 
     }
     @Override
@@ -81,11 +72,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "ON", Toast.LENGTH_SHORT).show();
             LayoutInflater inflater = LayoutInflater.from(this);
             View view = inflater.inflate(R.layout.user_input, null);
-            EditText userInput = (EditText) view.findViewById(R.id.user_input);
+            userInput = (EditText) view.findViewById(R.id.user_input);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Enter Time");
-            builder.setView(R.layout.user_input);
+            builder.setView(view);
             builder.setPositiveButton("OK", this);
             builder.setNegativeButton("CANCEL", this);
             builder.show();
@@ -125,6 +116,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(DialogInterface dialog, int which) {
         switch (which){
             case DialogInterface.BUTTON_POSITIVE:
+                String input = userInput.getText().toString().trim();
+                int indexOfColon = input.indexOf(":");
+                if (input.length() == 5 && indexOfColon == 2 ){
+                    try {
+                        int min = Integer.parseInt(input.substring(0, 2));
+                        int seconds = Integer.parseInt(input.substring(3,input.length()));
+                        long  millisec = (min * 60 + seconds ) * 1000;
+                        timer.setTimeRemaining(millisec);
+                        timer.start();
+                    }catch (NumberFormatException e){
+                        //invalid number
+                    }
+                }
+
 
                 break;
 
