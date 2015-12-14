@@ -58,8 +58,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         handler = new Handler();
         timer = new CountdownTimer(handler) {
             @Override
+            protected void onTimerStopped() {
+                stopButton.performClick();
+            }
+
+            @Override
             public void updateUI(long time) {
-                mTime.setText(time + "");
+                mTime.setText(CountdownTimer.covertToString(time));
             }
 
         };
@@ -117,17 +122,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (which){
             case DialogInterface.BUTTON_POSITIVE:
                 String input = userInput.getText().toString().trim();
-                int indexOfColon = input.indexOf(":");
-                if (input.length() == 5 && indexOfColon == 2 ){
-                    try {
-                        int min = Integer.parseInt(input.substring(0, 2));
-                        int seconds = Integer.parseInt(input.substring(3,input.length()));
-                        long  millisec = (min * 60 + seconds ) * 1000;
-                        timer.setTimeRemaining(millisec);
+                if (CountdownTimer.isValid(input) ){
+
+                        timer.setTimeRemaining(CountdownTimer.covertTomili(input));
                         timer.start();
-                    }catch (NumberFormatException e){
-                        //invalid number
-                    }
+
                 }
 
 
