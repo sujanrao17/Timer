@@ -3,6 +3,8 @@ package main.coderindigo.com.countdown.activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 import main.coderindigo.com.countdown.R;
 import main.coderindigo.com.countdown.activity.helper.CountdownTimer;
@@ -58,8 +62,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         handler = new Handler();
         timer = new CountdownTimer(handler) {
             @Override
-            protected void onTimerStopped() {
+            public void onPlayNotification() {
+                playSound();
+            }
+
+            @Override
+            public void onTimerFinished() {
                 stopButton.performClick();
+            }
+
+            @Override
+            public void onTimerStopped() {
+                mTime.setText("00:00");
             }
 
             @Override
@@ -70,6 +84,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
 
     }
+
+    private void playSound() {
+        try {
+            AssetFileDescriptor afd = getAssets().openFd("sounds/alert.mp3");
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(afd.getFileDescriptor());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -82,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Enter Time");
             builder.setView(view);
+            builder.setCancelable(false);
             builder.setPositiveButton("OK", this);
             builder.setNegativeButton("CANCEL", this);
             builder.show();
@@ -89,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }else if(v.getId() == R.id.stop_button){
             Toast.makeText(MainActivity.this, "OFF", Toast.LENGTH_SHORT).show();
-
+            timer.stop();
         }
 
     }
@@ -139,3 +169,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 }
+
