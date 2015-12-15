@@ -18,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import java.io.IOException;
 
@@ -29,10 +31,15 @@ import main.coderindigo.com.countdown.activity.helper.CountdownTimer;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, Dialog.OnClickListener{
 
     private TextView mTime;
-    private Button startButton;
-    private Button stopButton;
+    private SeekBar seekBar_min;
+    private SeekBar seekBar_sec;
+
+
+    private FloatingActionButton startButton;
+    private FloatingActionButton stopButton;
     private Handler handler;
-    private EditText userInput;
+    private TextView userInputMin;
+    private TextView userInputSec;
     private CountdownTimer timer;
 
     public MainActivity() {
@@ -54,9 +61,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+
+
+
+        //textView = (TextView) findViewById(R.id.textView1);
+
         mTime = (TextView) findViewById(R.id.time);
-        startButton = (Button) findViewById(R.id.start_button);
-        stopButton = (Button) findViewById(R.id.stop_button);
+
+        startButton = (FloatingActionButton) findViewById(R.id.start_button);
+        stopButton = (FloatingActionButton) findViewById(R.id.stop_button);
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         handler = new Handler();
@@ -106,10 +120,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "ON", Toast.LENGTH_SHORT).show();
             LayoutInflater inflater = LayoutInflater.from(this);
             View view = inflater.inflate(R.layout.user_input, null);
-            userInput = (EditText) view.findViewById(R.id.user_input);
+            seekBar_min = (SeekBar) view.findViewById(R.id.seekBar_min);
+            seekBar_sec = (SeekBar) view.findViewById(R.id.seekBar_sec);
+            userInputMin = (TextView) view.findViewById(R.id.user_input_min);
+            userInputSec = (TextView) view.findViewById(R.id.user_input_sec);
+//            userInput.setText(seekBar.getProgress() );
+            seekBar_min.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                int progress = 0;
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
+                    progress = progresValue;
+                    userInputMin.setText( (progress < 10) ? "0" + progress : progress + "" );
+                    //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+
+                }
+
+                @Override
+
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+
+            });
+
+            seekBar_sec.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                int progress = 0;
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
+                    progress = progresValue;
+                    userInputSec.setText( (progress < 10) ? "0" + progress : progress + "" );
+                    //Toast.makeText(getApplicationContext(), "Changing seekbar's progress", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+
+                }
+
+                @Override
+
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+
+            });
+
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Enter Time");
+
             builder.setView(view);
             builder.setCancelable(false);
             builder.setPositiveButton("OK", this);
@@ -151,7 +216,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(DialogInterface dialog, int which) {
         switch (which){
             case DialogInterface.BUTTON_POSITIVE:
-                String input = userInput.getText().toString().trim();
+                String minutes = userInputMin.getText().toString().trim();
+                String seconds = userInputSec.getText().toString().trim();
+                String input = minutes +":"+ seconds;
                 if (CountdownTimer.isValid(input) ){
 
                         timer.setTimeRemaining(CountdownTimer.covertTomili(input));
