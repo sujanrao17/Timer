@@ -1,12 +1,13 @@
 package main.coderindigo.com.countdown.activity.helper;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 
 /**
  * Created by sujana on 12/14/2015.
  */
-public abstract class CountdownTimer implements Runnable {
+public abstract class CountdownTimer  implements Runnable {
 
     private static final String TAG = CountdownTimer.class.getSimpleName();
     private long timeRemaining;

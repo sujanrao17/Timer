@@ -10,6 +10,18 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:text="MINUTES">
+
+        </TextView>
+
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/user_input_min"
             android:layout_width="match_parent"
@@ -32,6 +44,18 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:layout_marginTop="20dp"
+            android:text="SECONDS">
+
+        </TextView>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/user_input_sec"
